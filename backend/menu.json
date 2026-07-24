@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "nom": "Margherita",
+        "base": "Tomate",
+        "prix": 8,
+        "végétarienne": true
+    },
+    {
+        "id": 2,
+        "nom": "Chèvre-miel",
+        "base": "Crème",
+        "prix": 10.5,
+        "végétarienne": true
+    },
+    {
+        "id": 3,
+        "nom": "Orientale",
+        "base": "Tomate",
+        "prix": 11.0,
+        "végétarienne": false
+    },
+    {
+        "id": 5,
+        "nom": "Pécheur",
+        "base": "Tomate",
+        "prix": 11.0,
+        "végétarienne": true
+    },
+    {
+        "id": 6,
+        "nom": "Tonino",
+        "base": "Tomate",
+        "prix": 10.0,
+        "végétarienne": true
+    }
+]
