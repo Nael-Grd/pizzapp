@@ -1,6 +1,7 @@
 import { useState, useEffect, use } from 'react'
 import ListePizzas from './components/ListePizzas'
 import FormulairePizza from './components/FormulairePizza'
+import GestionIngredients from './components/GestionIngredients'
 
 function App() {
   const [ingredients, setIngredients] = useState([])
@@ -90,33 +91,21 @@ function App() {
 
   return (
     <div>
-    {/* INGREDIENTS */}
-    <form onSubmit={ajouterIngredient}>
-      <button type="submit">Ajouter l'ingrédient</button>
-      <input type='text' value={newIngredient} onChange={(e) => setNewIngredient(e.target.value)} />
-    </form>
-    <ul>
-      {ingredients.map((ingredient) => (
-        <li key={ingredient.id}>
-          {ingredient.nom}
-          <button onClick={() => supprimerIngredient(ingredient.id)} type="button">Supprimer l'ingrédient</button>
-        </li>
-      ))}
-    </ul>
+        {/* INGREDIENTS */}
+        <GestionIngredients ajouterIngredient={ajouterIngredient} newIngredient={newIngredient} setNewIngredient={setNewIngredient} 
+                        ingredients={ingredients} supprimerIngredient={supprimerIngredient} />
 
-    {/* PIZZAS */}
-    <FormulairePizza creerPizza={creerPizza} 
-                    nouvelleBase={nouvelleBase} setNouvelleBase={setNouvelleBase}
-                    ingredients={ingredients}
-                    ingredientsSelectionnes={ingredientsSelectionnes} setIngredientsSelectionnes={setIngredientsSelectionnes} 
-                    estVege={estVege} setEstVege={setEstVege}
-                    nouveauNom={nouveauNom} nouveauPrix={nouveauPrix} setNom={setNom} setPrix={setPrix} />
+        {/* PIZZAS */}
+        <FormulairePizza creerPizza={creerPizza} 
+                        nouvelleBase={nouvelleBase} setNouvelleBase={setNouvelleBase}
+                        ingredients={ingredients}
+                        ingredientsSelectionnes={ingredientsSelectionnes} setIngredientsSelectionnes={setIngredientsSelectionnes} 
+                        estVege={estVege} setEstVege={setEstVege}
+                        nouveauNom={nouveauNom} nouveauPrix={nouveauPrix} setNom={setNom} setPrix={setPrix} />
 
-    <ListePizzas pizzas={pizzas} supprimerPizza={supprimerPizza}/> 
+        <ListePizzas pizzas={pizzas} supprimerPizza={supprimerPizza}/> 
 
     </div>
-
-
   )
 }
 
