@@ -1,12 +1,16 @@
 import { useState, useEffect, use } from 'react'
+import ListePizzas from './components/ListePizzas'
+import FormulairePizza from './components/FormulairePizza'
 
 function App() {
   const [ingredients, setIngredients] = useState([])
   const [newIngredient, setNewIngredient] = useState("")
 
   const [pizzas, setPizzas] = useState([])
+  const [nouvelleBase, setNouvelleBase] = useState("Tomate")
   const [nouveauNom, setNom] = useState("")
   const [nouveauPrix, setPrix] = useState(0)
+  const [estVege, setEstVege] = useState(false)
   const [ingredientsSelectionnes, setIngredientsSelectionnes] = useState([])
 
   const chargerIngredients = () => {
@@ -53,7 +57,11 @@ function App() {
     fetch("http://127.0.0.1:8000/menu",
       {method: "POST",
        headers: {"Content-Type": "application/json"},
-       body: JSON.stringify({nom: nouveauNom, prix: nouveauPrix, ingredients: ingredientsSelectionnes}) 
+       body: JSON.stringify({nom: nouveauNom, 
+                            base: nouvelleBase,
+                            prix: Number(nouveauPrix), 
+                            vegetarienne : estVege,
+                            ingredients_ids: ingredientsSelectionnes}) 
       }
     )
     .then(() => {
@@ -64,10 +72,19 @@ function App() {
     })
   }
 
+  const supprimerPizza = (id) => {
+    fetch('http://127.0.0.1:8000/menu/' + id,
+      {method: "DELETE", 
+      }
+    )
+    .then(() => {
+      chargerPizzas()
+    })
+  }
+
   useEffect(() => {
     chargerIngredients()
     chargerPizzas()
-
   }, [])
   
 
@@ -88,31 +105,15 @@ function App() {
     </ul>
 
     {/* PIZZAS */}
-    <form onSubmit={creerPizza}>
-      <ul>
-      {ingredients.map((ingredient) => (
-        <li key={ingredient.id}>
-          <input type="checkbox" checked={ingredientsSelectionnes.includes(ingredient.id)}
-                  onChange={(e) => { if (e.target.checked) { setIngredientsSelectionnes([...ingredientsSelectionnes, ingredient.id]) }
-                                     else { setingredientsSelectionnes(ingredientsSelectionnes.filter((id) => id !== ingredient.id)) }
-                                   }                        
-         }/>{ingredient.nom}
-        </li>
-      ))}
-      </ul>
-      <input type="text" value={nouveauNom} onChange={(e) => setNom(e.target.value)} />
-      <input type="number" value={nouveauPrix} onChange={(e) => setPrix(e.target.value)} />
-      <button type="submit">Ajouter la pizza</button>
-    </form>
+    <FormulairePizza creerPizza={creerPizza} 
+                    nouvelleBase={nouvelleBase} setNouvelleBase={setNouvelleBase}
+                    ingredients={ingredients}
+                    ingredientsSelectionnes={ingredientsSelectionnes} setIngredientsSelectionnes={setIngredientsSelectionnes} 
+                    estVege={estVege} setEstVege={setEstVege}
+                    nouveauNom={nouveauNom} nouveauPrix={nouveauPrix} setNom={setNom} setPrix={setPrix} />
 
-    <ul>
-      {pizzas.map((pizza) => (          // return implicite
-        <li key={pizza.id}>
-          {pizza.nom} - {pizza.prix} €
-        </li>
-      ))  
-      }
-    </ul>
+    <ListePizzas pizzas={pizzas} supprimerPizza={supprimerPizza}/> 
+
     </div>
 
 
