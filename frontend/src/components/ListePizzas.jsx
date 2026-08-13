@@ -8,7 +8,7 @@ function ListePizzas({pizzas, supprimerPizza }) {
             {pizzas.map((pizza) => (          // return implicite
                 <li key={pizza.id}>
                 {pizza.nom} - {pizza.prix} €
-                <button onClick={() => supprimerPizza(pizza.id)} type="button">primer la pizza</button>
+                <button onClick={() => supprimerPizza(pizza.id)} type="button">Supprimer la pizza</button>
                 </li>
             ))  
             }

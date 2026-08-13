@@ -1,7 +1,11 @@
 import { useState, useEffect, use } from 'react'
-import ListePizzas from './components/ListePizzas'
-import FormulairePizza from './components/FormulairePizza'
-import GestionIngredients from './components/GestionIngredients'
+import  { BrowserRouter, Route, Routes, Link } from 'react-router-dom'
+
+import Accueil from "./pages/Accueil"
+import Admin from "./pages/Admin"
+
+import { getPizzas, getIngredients, postIngredient, deleteIngredient, postPizza, deletePizza } from "./services/api.js"
+
 
 function App() {
   const [ingredients, setIngredients] = useState([])
@@ -15,71 +19,44 @@ function App() {
   const [ingredientsSelectionnes, setIngredientsSelectionnes] = useState([])
 
   const chargerIngredients = () => {
-    fetch("http://127.0.0.1:8000/ingredients")
-    .then(response => response.json())
-    .then(donnes => {
+    getIngredients().then(donnes => {
       setIngredients(donnes)
     })
   }
   
   const ajouterIngredient = (e) => {
     e.preventDefault()   // empeche la page de se recherger/clignoter
-    fetch("http://127.0.0.1:8000/ingredients", 
-      {method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({nom: newIngredient})
-      }
-    )
-    .then(() => {   // fonction felchée anonyme pour attendre la rep du serveur avant execution
-      setNewIngredient("") // On vide le champ texte
-      chargerIngredients() // On recharge la liste
+    postIngredient(newIngredient).then(() => {   // fonction felchée anonyme pour attendre la rep du serveur avant execution
+        setNewIngredient("") // On vide le champ texte
+        chargerIngredients() // On recharge la liste
     })
   }
 
   const supprimerIngredient = (id) => {
-    fetch("http://127.0.0.1:8000/ingredients/" + id,
-      {method: "DELETE"}
-    )
-    .then(() => {
+    deleteIngredient(id).then(() => {
       chargerIngredients()
     })
   }
 
   const chargerPizzas = () => {
-    fetch("http://127.0.0.1:8000/menu")
-    .then(response => response.json())
-    .then(donnes => {
-      setPizzas(donnes)
+    getPizzas().then(donnes => {
+        setPizzas(donnes)
     })
   }
 
   const creerPizza = (e) => {
     e.preventDefault()
-    fetch("http://127.0.0.1:8000/menu",
-      {method: "POST",
-       headers: {"Content-Type": "application/json"},
-       body: JSON.stringify({nom: nouveauNom, 
-                            base: nouvelleBase,
-                            prix: Number(nouveauPrix), 
-                            vegetarienne : estVege,
-                            ingredients_ids: ingredientsSelectionnes}) 
-      }
-    )
-    .then(() => {
-      chargerPizzas()
-      setNom("")
-      setPrix(0)
-      setIngredientsSelectionnes([])
+    postPizza(nouveauNom, nouvelleBase, nouveauPrix, estVege, ingredientsSelectionnes).then(() => {
+        chargerPizzas()
+        setNom("")
+        setPrix(0)
+        setIngredientsSelectionnes([])
     })
   }
 
   const supprimerPizza = (id) => {
-    fetch('http://127.0.0.1:8000/menu/' + id,
-      {method: "DELETE", 
-      }
-    )
-    .then(() => {
-      chargerPizzas()
+    deletePizza(id).then(() => {
+        chargerPizzas()
     })
   }
 
@@ -90,22 +67,24 @@ function App() {
   
 
   return (
+    <BrowserRouter>
     <div>
-        {/* INGREDIENTS */}
-        <GestionIngredients ajouterIngredient={ajouterIngredient} newIngredient={newIngredient} setNewIngredient={setNewIngredient} 
-                        ingredients={ingredients} supprimerIngredient={supprimerIngredient} />
+        
+        <Link to={"/admin"}>Administration</Link>
+        <Link to={"/"}>Retour au menu</Link>
 
-        {/* PIZZAS */}
-        <FormulairePizza creerPizza={creerPizza} 
-                        nouvelleBase={nouvelleBase} setNouvelleBase={setNouvelleBase}
-                        ingredients={ingredients}
-                        ingredientsSelectionnes={ingredientsSelectionnes} setIngredientsSelectionnes={setIngredientsSelectionnes} 
-                        estVege={estVege} setEstVege={setEstVege}
-                        nouveauNom={nouveauNom} nouveauPrix={nouveauPrix} setNom={setNom} setPrix={setPrix} />
-
-        <ListePizzas pizzas={pizzas} supprimerPizza={supprimerPizza}/> 
+        <Routes>
+            <Route path='/' element={<Accueil pizzas={pizzas} supprimerPizza={supprimerPizza}/>} />
+            <Route path='/admin' element={<Admin ajouterIngredient={ajouterIngredient} newIngredient={newIngredient} setNewIngredient={setNewIngredient} 
+                                            ingredients={ingredients} supprimerIngredient={supprimerIngredient}
+                                            creerPizza={creerPizza} nouvelleBase={nouvelleBase} setNouvelleBase={setNouvelleBase}
+                                            ingredientsSelectionnes={ingredientsSelectionnes} setIngredientsSelectionnes={setIngredientsSelectionnes} 
+                                            estVege={estVege} setEstVege={setEstVege}
+                                            nouveauNom={nouveauNom} nouveauPrix={nouveauPrix} setNom={setNom} setPrix={setPrix} />} /> 
+        </Routes>
 
     </div>
+    </BrowserRouter>
   )
 }
 
