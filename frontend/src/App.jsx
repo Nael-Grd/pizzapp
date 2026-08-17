@@ -18,9 +18,15 @@ function App() {
   const [estVege, setEstVege] = useState(false)
   const [ingredientsSelectionnes, setIngredientsSelectionnes] = useState([])
 
+  const [chargementPizzas, setChargementPizzas] = useState(true)
+  const [chargementIngredients, setChargementIngredients] = useState(true)
+
   const chargerIngredients = () => {
-    getIngredients().then(donnes => {
+    return getIngredients().then(donnes => {
       setIngredients(donnes)
+    })
+    .then(() => {
+        setChargementIngredients(false)
     })
   }
   
@@ -39,8 +45,11 @@ function App() {
   }
 
   const chargerPizzas = () => {
-    getPizzas().then(donnes => {
+    return getPizzas().then(donnes => {   //return pour que App sache quand la prommesse est finie
         setPizzas(donnes)
+    })
+    .then(() => {
+        setChargementPizzas(false)
     })
   }
 
@@ -61,30 +70,35 @@ function App() {
   }
 
   useEffect(() => {
-    chargerIngredients()
     chargerPizzas()
+    chargerIngredients()
   }, [])
   
 
-  return (
-    <BrowserRouter>
-    <div>
-        
-        <Link to={"/admin"}>Administration</Link>
-        <Link to={"/"}>Retour au menu</Link>
+    if(enChargement) {
+        return <div>Chargement des données...</div>
+    }
 
-        <Routes>
-            <Route path='/' element={<Accueil pizzas={pizzas} supprimerPizza={supprimerPizza}/>} />
-            <Route path='/admin' element={<Admin ajouterIngredient={ajouterIngredient} newIngredient={newIngredient} setNewIngredient={setNewIngredient} 
-                                            ingredients={ingredients} supprimerIngredient={supprimerIngredient}
-                                            creerPizza={creerPizza} nouvelleBase={nouvelleBase} setNouvelleBase={setNouvelleBase}
-                                            ingredientsSelectionnes={ingredientsSelectionnes} setIngredientsSelectionnes={setIngredientsSelectionnes} 
-                                            estVege={estVege} setEstVege={setEstVege}
-                                            nouveauNom={nouveauNom} nouveauPrix={nouveauPrix} setNom={setNom} setPrix={setPrix} />} /> 
-        </Routes>
+    return (
+        <BrowserRouter>
+        <div>
+            
+            <Link to={"/admin"}>Administration</Link>
+            <Link to={"/"}>Retour au menu</Link>
 
-    </div>
-    </BrowserRouter>
+            <Routes>
+                <Route path='/' element={<Accueil pizzas={pizzas} supprimerPizza={supprimerPizza} chargementPizzas={chargementPizzas} />} />
+                <Route path='/admin' element={<Admin ajouterIngredient={ajouterIngredient} newIngredient={newIngredient} setNewIngredient={setNewIngredient} 
+                                                ingredients={ingredients} supprimerIngredient={supprimerIngredient}
+                                                creerPizza={creerPizza} nouvelleBase={nouvelleBase} setNouvelleBase={setNouvelleBase}
+                                                ingredientsSelectionnes={ingredientsSelectionnes} setIngredientsSelectionnes={setIngredientsSelectionnes} 
+                                                estVege={estVege} setEstVege={setEstVege}
+                                                nouveauNom={nouveauNom} nouveauPrix={nouveauPrix} setNom={setNom} setPrix={setPrix} 
+                                                chargementIngredients={chargementIngredients}/>} /> 
+            </Routes>
+
+        </div>
+        </BrowserRouter>
   )
 }
 

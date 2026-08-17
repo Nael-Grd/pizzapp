@@ -6,9 +6,13 @@ function Admin({ajouterIngredient, newIngredient, setNewIngredient, ingredients,
                         nouvelleBase, setNouvelleBase,
                         ingredientsSelectionnes, setIngredientsSelectionnes, 
                         estVege, setEstVege, 
-                        nouveauNom, nouveauPrix, setNom, setPrix
-}) {
+                        nouveauNom, nouveauPrix, setNom, setPrix, 
+                        chargementIngredients}) 
+{
     
+    if (chargementIngredients){
+        return <div>Livraison des ingredients en cours...</div>
+    }
     return(
         <div>
             <GestionIngredients ajouterIngredient={ajouterIngredient} newIngredient={newIngredient} setNewIngredient={setNewIngredient} 
