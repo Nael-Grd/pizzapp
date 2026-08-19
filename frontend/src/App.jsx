@@ -22,7 +22,7 @@ function App() {
   const [chargementIngredients, setChargementIngredients] = useState(true)
 
   const chargerIngredients = () => {
-    return getIngredients().then(donnes => {
+    getIngredients().then(donnes => {
       setIngredients(donnes)
     })
     .then(() => {
@@ -45,7 +45,7 @@ function App() {
   }
 
   const chargerPizzas = () => {
-    return getPizzas().then(donnes => {   //return pour que App sache quand la prommesse est finie
+    getPizzas().then(donnes => {   //return pour que App sache quand la prommesse est finie
         setPizzas(donnes)
     })
     .then(() => {
@@ -60,6 +60,7 @@ function App() {
         setNom("")
         setPrix(0)
         setIngredientsSelectionnes([])
+        setEstVege(false)
     })
   }
 
@@ -75,17 +76,22 @@ function App() {
   }, [])
   
 
-    if(enChargement) {
-        return <div>Chargement des données...</div>
+    if(chargementIngredients) {
+        return <div>Livraison des ingredients en cours...</div>
+    }
+
+    if(chargementPizzas) {
+        return <div>Cuisson en cours...</div>
     }
 
     return (
         <BrowserRouter>
-        <div>
+        <div className="bg-gray-200 h-screen ">
             
-            <Link to={"/admin"}>Administration</Link>
-            <Link to={"/"}>Retour au menu</Link>
-
+            <nav className='bg-gray-700 text-white shadow-xl text-center flex justify-center gap-4 px-4 py-2'>
+                <Link className='hover:text-yellow-500' to={"/admin"}>Administration</Link>
+                <Link className='hover:text-yellow-500' to={"/"}>Retour au menu</Link>
+            </nav>
             <Routes>
                 <Route path='/' element={<Accueil pizzas={pizzas} supprimerPizza={supprimerPizza} chargementPizzas={chargementPizzas} />} />
                 <Route path='/admin' element={<Admin ajouterIngredient={ajouterIngredient} newIngredient={newIngredient} setNewIngredient={setNewIngredient} 
